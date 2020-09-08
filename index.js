@@ -1,4 +1,3 @@
-// reducer function that uses action to update state
 function createStore(reducer) {
   // store has 4 parts:
   // 1. internal state (private)
@@ -40,10 +39,11 @@ const TOGGLE_TODO = "TOGGLE_TODO";
 const ADD_GOAL = "ADD_GOAL";
 const REMOVE_GOAL = "REMOVE_GOAL";
 
+// Action Creators - a function that returns an action
 function addTodoAction(todo) {
   return {
     type: ADD_TODO,
-    todo: todo,
+    todo,
   };
 }
 
@@ -64,7 +64,7 @@ function toggleTodoAction(id) {
 function addGoalAction(goal) {
   return {
     type: ADD_GOAL,
-    goal: goal,
+    goal,
   };
 }
 
@@ -75,6 +75,7 @@ function removeGoalAction(id) {
   };
 }
 
+// todos reducer
 function todos(state = [], action) {
   switch (action.type) {
     case ADD_TODO:
@@ -92,6 +93,7 @@ function todos(state = [], action) {
   }
 }
 
+// goals reducer
 function goals(state = [], action) {
   switch (action.type) {
     case ADD_GOAL:
@@ -110,7 +112,9 @@ function appReducer(state = {}, action) {
   };
 }
 
+// ! Create the store
 const store = createStore(appReducer);
+
 store.dispatch(
   addTodoAction({
     id: 0,
@@ -118,8 +122,6 @@ store.dispatch(
     complete: false,
   }),
 );
-
-console.log("get store", store.getState());
 
 store.subscribe(() => {
   console.log("The new state is: ", store.getState());
