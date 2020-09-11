@@ -75,7 +75,7 @@
       const REMOVE_GOAL = "REMOVE_GOAL";
       const RECEIVE_DATA = "RECEIVE_DATA";
 
-      // Action Creators - a function that returns an action
+      // Action Creators - a function that returns an action, must be POJO
       function addTodoAction(todo) {
         return {
           type: ADD_TODO,
@@ -117,6 +117,17 @@
           todos,
           goals,
         };
+      }
+
+      function handleDeleteTodo(todo) {
+        return (dispatch) => {
+          dispatch(removeTodoAction(todo.id))
+          return API.deleteTodo(todo.id)
+            .catch(() => {
+              dispatch(addTodoAction(todo))
+              alert('Error: cannot delete item. Try again')
+            })
+        }
       }
       
       // next is the next middleware in the middleware or the dispatch
@@ -277,12 +288,12 @@
               return (
                 <li key={item.id}>
                   <span
-                    onClick={() => props.toggleItem && props.toggleItem(item.id)}
+                    onClick={() => props.toggleItem && props.toggleItem(item)}
                     style={{textDecoration: item.complete ? 'line-through' : 'none'}}
                   >
                     {item.name}
                   </span>
-                  <button onClick={() => props.removeItem(item.id)}>X</button>
+                  <button onClick={() => props.removeItem(item)}>X</button>
                 </li>
               )
             })}
@@ -293,21 +304,27 @@
       class Todos extends React.Component {
         addItem = (e) => {
           e.preventDefault();
-          const name = this.input.value
-          this.input.value = ''
-          this.props.store.dispatch(addTodoAction({
-            id: generateId(),
-            name,
-            complete: false
-          }))
+          return API.saveTodo(this.input.value)
+            .then((todo) => {
+              this.props.store.dispatch(addTodoAction(todo))
+              this.input.value = ''
+            })
+            .catch(() => {
+              alert('ERROR!')
+            })
         }
 
-        removeItem = (id) => {
-          this.props.store.dispatch(removeTodoAction(id))
+        removeItem = (item) => {
+          this.props.store.dispatch(handleDeleteTodo(item))
         }
 
-        toggleItem = (id) => {
-          this.props.store.dispatch(toggleTodoAction(id))
+        toggleItem = (item) => {
+          this.props.store.dispatch(toggleTodoAction(item.id))
+          return API.saveTodoToggle(item.id)
+            .catch(() => {
+              this.props.store.dispatch(toggleTodoAction(item.id))
+              alert('Error: cannot toggle item. Try again')
+            })
         }
         render (){
           return (
@@ -328,16 +345,23 @@
       class Goals extends React.Component {
         addItem = (e) => {
           e.preventDefault();
-          const name = this.input.value
-          this.input.value = ''
-          this.props.store.dispatch(addGoalAction({
-            id: generateId(),
-            name,
-          }))
+          return API.saveGoal(this.input.value)
+            .then((goal) => {
+              this.props.store.dispatch(addGoalAction(goal))
+              this.input.value = ''
+            })
+            .catch (() => {
+              alert('ERROR')
+            })
         }
 
-        removeItem = (id) => {
-          this.props.store.dispatch(removeGoalAction(id))
+        removeItem = (item) => {
+          this.props.store.dispatch(removeGoalAction(item.id))
+          return API.deleteGoal(item.id)
+            .catch(() => {
+              this.props.store.dispatch(addGoalAction(item))
+              alert('Error: cannot delete item. Try again')
+            })
         }
         render (){
           return (
