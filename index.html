@@ -9,6 +9,7 @@
     <script src='https://unpkg.com/babel-standalone@6.26.0/babel.min.js'></script>
     <script src='https://ui.dev/goals-todos-api/index.js'></script>
     <script src='https://unpkg.com/redux-thunk@2.3.0/dist/redux-thunk.min.js'></script>
+    <script src='https://unpkg.com/react-redux@7.2.0/dist/react-redux.min.js'></script>
   </head>
   <body>
     <!-- <div>
@@ -397,7 +398,7 @@
         }
       }
 
-      const ConnectedTodos = connect((state) => ({
+      const ConnectedTodos = ReactRedux.connect((state) => ({
         todos: state.todos
       }))(Todos);
 
@@ -429,7 +430,7 @@
       }
 
 
-      const ConnectedGoals = connect((state) => ({
+      const ConnectedGoals = ReactRedux.connect((state) => ({
         goals: state.goals
       }))(Goals);
 
@@ -451,6 +452,8 @@
           )
         }
       }
+
+      /* Our implementation of ReactRedux
 
       const Context = React.createContext()
 
@@ -483,6 +486,7 @@
           return ConnectedComponent;
         }
       }
+     
 
       class Provider extends React.Component {
         render (){
@@ -493,15 +497,16 @@
           )
         }
       }
+       */
 
-      const ConnectedApp = connect((state) => ({
+      const ConnectedApp = ReactRedux.connect((state) => ({
         loading: state.loading
       }))(App);
 
       ReactDOM.render(
-        <Provider store={store}>
+        <ReactRedux.Provider store={store}>
           <ConnectedApp />
-        </Provider>,
+        </ReactRedux.Provider>,
         document.getElementById('app')
       )
     </script>
