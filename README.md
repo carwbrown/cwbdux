@@ -1,5 +1,5 @@
 # cwbdux
-My own redux librarys
+My own redux library
 
 cwb redux
 
